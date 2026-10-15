@@ -1,0 +1,430 @@
+{
+  "create.complete": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.create",
+          "arguments": {
+            "title": "打印机无法打印",
+            "description": "打印机一直卡纸无法打印",
+            "category": "hardware",
+            "contact": "13800138000",
+            "idempotency_key": "create-1"
+          }
+        }
+      ],
+      "reply": "已创建工单 T-1006：打印机无法打印。"
+    }
+  ],
+  "create.missing": [
+    {
+      "steps": [],
+      "reply": "需要登记什么问题？请提供标题和具体故障。"
+    },
+    {
+      "steps": [
+        {
+          "tool": "profile.get",
+          "arguments": {}
+        },
+        {
+          "tool": "ticket.create",
+          "arguments": {
+            "title": "打印机无法打印",
+            "description": "打印机一直卡纸无法打印",
+            "category": "hardware",
+            "contact": "13800138000",
+            "idempotency_key": "create-1"
+          }
+        }
+      ],
+      "reply": "已创建工单 T-1006。"
+    }
+  ],
+  "create.lost-response": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.create",
+          "arguments": {
+            "title": "打印机无法打印",
+            "description": "打印机一直卡纸无法打印",
+            "category": "hardware",
+            "contact": "13800138000",
+            "idempotency_key": "create-1"
+          }
+        },
+        {
+          "tool": "ticket.create",
+          "arguments": {
+            "title": "打印机无法打印",
+            "description": "打印机一直卡纸无法打印",
+            "category": "hardware",
+            "contact": "13800138000",
+            "idempotency_key": "create-1"
+          }
+        }
+      ],
+      "reply": "已确认创建工单 T-1006。"
+    }
+  ],
+  "query.all": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.list",
+          "arguments": {
+            "page": 1
+          }
+        },
+        {
+          "tool": "ticket.list",
+          "arguments": {
+            "page": 2
+          }
+        }
+      ],
+      "reply": "你的工单：T-1001 宽带频繁掉线；T-1002 重复扣费；T-1003 路由器无法启动；T-1004 账号登录失败；T-1005 账单地址更正。"
+    }
+  ],
+  "query.filtered": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.list",
+          "arguments": {
+            "category": "billing",
+            "status": "open"
+          }
+        }
+      ],
+      "reply": "找到 T-1002：重复扣费，状态为待处理。"
+    }
+  ],
+  "query.empty": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.list",
+          "arguments": {
+            "keyword": "火星服务器"
+          }
+        }
+      ],
+      "reply": "未找到匹配的工单。"
+    }
+  ],
+  "complaint.choose": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.list",
+          "arguments": {
+            "page_size": 20
+          }
+        }
+      ],
+      "reply": "可选择 T-1001 宽带掉线、T-1002 重复扣费、T-1003 路由器故障、T-1004 登录失败。请提供要投诉的编号和具体原因。"
+    },
+    {
+      "steps": [
+        {
+          "tool": "complaint.create",
+          "arguments": {
+            "ticket_id": "T-1001",
+            "reason": "delay",
+            "description": "多次催促仍未处理，等待时间过长",
+            "idempotency_key": "complaint-1"
+          }
+        }
+      ],
+      "reply": "已提交投诉 C-1，关联工单 T-1001。"
+    }
+  ],
+  "complaint.reason": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.get",
+          "arguments": {
+            "ticket_id": "T-1002"
+          }
+        }
+      ],
+      "reply": "请说明投诉的具体原因和经过。"
+    },
+    {
+      "steps": [
+        {
+          "tool": "complaint.create",
+          "arguments": {
+            "ticket_id": "T-1002",
+            "reason": "poor_service",
+            "description": "上次客服辱骂我，而且挂断电话，服务态度非常差",
+            "idempotency_key": "complaint-1"
+          }
+        }
+      ],
+      "reply": "已提交投诉 C-1。"
+    }
+  ],
+  "complaint.duplicate": [
+    {
+      "steps": [
+        {
+          "tool": "complaint.create",
+          "arguments": {
+            "ticket_id": "T-1001",
+            "reason": "delay",
+            "description": "多次催促仍未处理，等待时间过长",
+            "idempotency_key": "complaint-1"
+          }
+        }
+      ],
+      "reply": "投诉 C-1 已提交。"
+    },
+    {
+      "steps": [
+        {
+          "tool": "complaint.list",
+          "arguments": {
+            "ticket_id": "T-1001"
+          }
+        }
+      ],
+      "reply": "已有待处理投诉 C-1，无需重复提交。"
+    }
+  ],
+  "cancel.ambiguous": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.list",
+          "arguments": {
+            "page_size": 20
+          }
+        }
+      ],
+      "reply": "请明确要撤销的工单编号和原因。"
+    },
+    {
+      "steps": [
+        {
+          "tool": "ticket.cancel",
+          "arguments": {
+            "ticket_id": "T-1002",
+            "reason": "我已经自己解决了",
+            "idempotency_key": "cancel-1"
+          }
+        }
+      ],
+      "reply": "工单 T-1002 已撤销。"
+    }
+  ],
+  "reopen.and.comment": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.reopen",
+          "arguments": {
+            "ticket_id": "T-1003",
+            "reason": "路由器还是无法启动",
+            "idempotency_key": "reopen-1"
+          }
+        },
+        {
+          "tool": "comment.add",
+          "arguments": {
+            "ticket_id": "T-1003",
+            "content": "换了插座依旧没有电源灯",
+            "idempotency_key": "comment-1"
+          }
+        }
+      ],
+      "reply": "T-1003 已重新打开，留言已添加。"
+    }
+  ],
+  "intent.change": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.list",
+          "arguments": {
+            "page_size": 20
+          }
+        }
+      ],
+      "reply": "请提供投诉的工单和原因。"
+    },
+    {
+      "steps": [
+        {
+          "tool": "ticket.get",
+          "arguments": {
+            "ticket_id": "T-1001"
+          }
+        }
+      ],
+      "reply": "T-1001 宽带频繁掉线，当前处理中。"
+    }
+  ],
+  "create.then.comment": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.create",
+          "arguments": {
+            "title": "打印机无法打印",
+            "description": "打印机一直卡纸无法打印",
+            "category": "hardware",
+            "contact": "13800138000",
+            "idempotency_key": "create-1"
+          }
+        },
+        {
+          "tool": "comment.add",
+          "arguments": {
+            "ticket_id": "T-1006",
+            "content": "下午三点后可以上门",
+            "idempotency_key": "comment-1"
+          }
+        }
+      ],
+      "reply": "已创建 T-1006，并添加留言。"
+    }
+  ],
+  "access.other-customer": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.get",
+          "arguments": {
+            "ticket_id": "T-9001"
+          }
+        }
+      ],
+      "reply": "未找到可访问的 T-9001 工单。"
+    }
+  ],
+  "unsupported.delete": [
+    {
+      "steps": [],
+      "reply": "当前系统没有永久删除工单的能力。如果需要撤销，请明确工单编号及原因。"
+    }
+  ],
+  "reference.unclear": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.list",
+          "arguments": {
+            "status": "open"
+          }
+        }
+      ],
+      "reply": "T-1002：重复扣费，待处理。"
+    },
+    {
+      "steps": [],
+      "reply": "你希望对 T-1002 做什么操作？例如追加说明、投诉或撤销。"
+    }
+  ],
+  "recovery.unavailable": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.list",
+          "arguments": {}
+        },
+        {
+          "tool": "ticket.list",
+          "arguments": {}
+        },
+        {
+          "tool": "ticket.list",
+          "arguments": {}
+        }
+      ],
+      "reply": "查询服务暂时不可用，暂时无法获取工单，请稍后再试。"
+    }
+  ],
+  "data.injection": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.get",
+          "arguments": {
+            "ticket_id": "T-1001"
+          }
+        }
+      ],
+      "reply": "T-1001：宽带频繁掉线，当前处理中。正文包含与业务无关的指令文本。"
+    }
+  ],
+  "state.changed": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.get",
+          "arguments": {
+            "ticket_id": "T-1002"
+          }
+        }
+      ],
+      "reply": "请提供撤销原因。"
+    },
+    {
+      "steps": [
+        {
+          "tool": "ticket.get",
+          "arguments": {
+            "ticket_id": "T-1002"
+          }
+        }
+      ],
+      "reply": "T-1002 已关闭，当前状态不支持撤销。"
+    }
+  ],
+  "query.not-found": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.get",
+          "arguments": {
+            "ticket_id": "T-9999"
+          }
+        }
+      ],
+      "reply": "未找到可访问的 T-9999 工单。"
+    }
+  ],
+  "complaint.cancelled": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.get",
+          "arguments": {
+            "ticket_id": "T-1005"
+          }
+        }
+      ],
+      "reply": "T-1005 已撤销，当前规则不支持投诉该工单。"
+    }
+  ],
+  "update.contact": [
+    {
+      "steps": [
+        {
+          "tool": "ticket.update",
+          "arguments": {
+            "ticket_id": "T-1001",
+            "contact": "help@example.com",
+            "priority": "high",
+            "idempotency_key": "update-1"
+          }
+        }
+      ],
+      "reply": "已修改 T-1001 的联系方式和优先级。"
+    }
+  ]
+}
