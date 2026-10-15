@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.agentlab/
+reports/
+.venv/
+.DS_Store
+.env
+.env.*
+!.env.example
